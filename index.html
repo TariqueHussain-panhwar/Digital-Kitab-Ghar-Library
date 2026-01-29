@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="sd" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ايڊمن پينل - ڊجيٽل ڪتاب گھر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Lateef', cursive; background-color: #f0f2f5; }
+        .admin-card { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-5xl mx-auto flex justify-between items-center bg-blue-900 text-white p-6 rounded-t-xl shadow-lg">
+        <div>
+            <h1 class="text-3xl font-bold">ايڊمن ڪنٽرول ڊيش بورڊ</h1>
+            <p class="text-blue-200">طارق حسين پنهور صاحب، ڀلي ڪري آيا!</p>
+        </div>
+        <div class="text-left">
+            <span class="bg-green-500 px-3 py-1 rounded-full text-sm">آنلائن</span>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        
+        <div class="md:col-span-1 admin-card p-6">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-blue-800">نئون ڪتاب شامل ڪريو</h3>
+            <form id="bookForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold">ڪتاب جو عنوان:</label>
+                    <input type="text" id="title" class="w-full p-2 border rounded shadow-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold">ليکڪ جو نالو:</label>
+                    <input type="text" id="author" class="w-full p-2 border rounded shadow-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold">ڪيٽيگري (صنف):</label>
+                    <select id="category" class="w-full p-2 border rounded shadow-sm">
+                        <option>ناول</option>
+                        <option>تاريخ</option>
+                        <option>شاعري</option>
+                        <option>ٻارن جو ادب</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold">مختصر تعارف:</label>
+                    <textarea id="desc" class="w-full p-2 border rounded shadow-sm" rows="3"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-700 text-white py-3 rounded-lg font-bold hover:bg-blue-800 transition">اپلوڊ ڪريو ✅</button>
+            </form>
+        </div>
+
+        <div class="md:col-span-2 admin-card p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-blue-800">موجود ڪتابن جي لسٽ</h3>
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm font-bold">ڪل تعداد: <span id="bookCount">0</span></span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 border-b">
+                            <th class="p-3">عنوان</th>
+                            <th class="p-3">ليکڪ</th>
+                            <th class="p-3">ڪيٽيگري</th>
+                            <th class="p-3">عمل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookList">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto mt-8 admin-card p-6 border-t-4 border-red-500">
+        <h3 class="text-2xl font-bold text-red-700 mb-4">يوزر تبصرا ۽ ڪنٽرول (Admin Control)</h3>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded border">
+                <div>
+                    <p class="font-bold">پڙهندڙ: محمد علي</p>
+                    <p class="text-gray-600 italic">"هي ڪتاب تمام سٺو آهي پر ان جا ڪجهه صفحا غائب آهن."</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="bg-red-100 text-red-600 px-3 py-1 rounded text-sm border border-red-200">ڊليٽ</button>
+                    <button class="bg-gray-800 text-white px-3 py-1 rounded text-sm">بلاڪ يوزر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bookForm = document.getElementById('bookForm');
+        const bookList = document.getElementById('bookList');
+        const bookCountDisplay = document.getElementById('bookCount');
+        let count = 0;
+
+        bookForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // قيمتون کڻڻ
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const category = document.getElementById('category').value;
+
+            // نئون قطار ٺاهڻ
+            const row = document.createElement('tr');
+            row.className = "border-b hover:bg-gray-50";
+            row.innerHTML = `
+                <td class="p-3 font-bold">${title}</td>
+                <td class="p-3">${author}</td>
+                <td class="p-3 text-blue-600">${category}</td>
+                <td class="p-3">
+                    <button onclick="this.parentElement.parentElement.remove(); updateCount(-1);" class="text-red-500 font-bold underline">ختم ڪريو</button>
+                </td>
+            `;
+
+            bookList.appendChild(row);
+            
+            // فارم صاف ڪرڻ ۽ تعداد وڌائڻ
+            bookForm.reset();
+            updateCount(1);
+        });
+
+        function updateCount(val) {
+            count += val;
+            bookCountDisplay.innerText = count;
+        }
+    </script>
+
+</body>
+</html>
