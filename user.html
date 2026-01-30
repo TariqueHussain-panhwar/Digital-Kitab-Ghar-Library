@@ -4,21 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ڊجيٽل لائبريري - پڙھندڙن لاءِ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Lateef', serif; background-color: #0f172a; color: white; }
-        .book-card { background: #1e293b; border: 1px solid #334155; transition: 0.3s; }
-        .book-card:hover { border-color: #f97316; transform: scale(1.02); }
-        /* اکرن جي سائيز جا قاعدا */
-.text-small { font-size: 16px !important; }
-.text-medium { font-size: 22px !important; }
-.text-large { font-size: 30px !important; }
-
-/* سنڌي فونٽس جا آپشن */
-.font-lateef { font-family: 'Lateef', serif !important; }
-.font-noto { font-family: 'Noto Sans Arabic', sans-serif !important; }
-        
+        <style>
+        body { font-family: 'Lateef', serif; background-color: #f8fafc; color: #1e293b; direction: rtl; }
+        .book-card { 
+            background: white; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+        .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .book-cover { width: 100%; height: 280px; object-fit: cover; border-bottom: 2px solid #f1f5f9; }
+        .text-small { font-size: 16px !important; }
+        .text-medium { font-size: 20px !important; }
+        .text-large { font-size: 26px !important; }
+        .font-lateef { font-family: 'Lateef', serif !important; }
+        .font-noto { font-family: 'Noto Sans Arabic', sans-serif !important; }
     </style>
 </head>
 <body>
@@ -64,40 +68,25 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let allBooks = [];
-
-        onSnapshot(collection(db, "books"), (snap) => {
-            allBooks = [];
-            snap.forEach((doc) => { allBooks.push({ id: doc.id, ...doc.data() }); });
-            displayBooks(allBooks);
-        });
-
-        function displayBooks(books) {
-            const grid = document.getElementById('booksGrid');
-            grid.innerHTML = "";
-            books.forEach(book => {
-                const cover = book.coverUrl || 'https://via.placeholder.com/300x400?text=ڪتاب';
-                grid.innerHTML += `
-                <div class="book-card p-4 rounded-2xl flex gap-5 shadow-2xl">
-                    <img src="${cover}" class="w-32 h-48 object-contain rounded-lg bg-black border border-gray-600">
-                  
-};
-
-                    <div class="flex-1 text-right">
-                        <h3 class="text-2xl font-bold text-orange-400 mb-1 leading-tight">${book.title}</h3>
-                        <p class="text-gray-300 text-sm mb-2">ليکڪ: <span class="text-white font-bold">${book.author}</span></p>
-                        <div class="text-xs space-y-1 text-gray-400">
-                            <p>سال: ${book.year}</p>
-                            <p>ڪيٽيگري: ${book.category}</p>
-                            <p>ٻولي: ${book.lang}</p>
-                        </div>
-                        <div class="mt-6 flex gap-2">
-                            <a href="${book.pdfUrl}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 text-center transition">پڙھو 📖</a>
-                            <a href="${book.pdfUrl}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 text-center transition">ڊائون لوڊ 📥</a>
-                        </div>
+function displayBooks(books) {
+    const grid = document.getElementById('booksGrid');
+    grid.innerHTML = "";
+    books.forEach(book => {
+        const cover = book.coverUrl || 'https://via.placeholder.com/300x400?text=ڪور_ميسر_ناهي';
+        grid.innerHTML += `
+            <div class="book-card p-0 shadow-lg border border-gray-200">
+                <img src="${cover}" class="book-cover" alt="${book.title}">
+                <div class="p-4 text-right">
+                    <h3 class="text-xl font-bold text-indigo-900 mb-2">${book.title}</h3>
+                    <p class="text-gray-600 text-sm mb-4">ليکڪ: <span class="font-bold text-orange-600">${book.author}</span></p>
+                    <div class="flex gap-2">
+                        <a href="${book.pdfUrl}" target="_blank" class="flex-1 bg-indigo-600 text-white text-center py-2 rounded-lg hover:bg-indigo-700 transition no-underline text-sm">پڙهو 📖</a>
+                        <a href="${book.pdfUrl}" download class="flex-1 border border-indigo-600 text-indigo-600 text-center py-2 rounded-lg hover:bg-indigo-50 transition no-underline text-sm">ڊائونلوڊ ⬇️</a>
                     </div>
-                </div>`;
-            });
-        }
+                </div>
+            </div>`;
+    });
+}
 
         }; // هي displayBooks کي بند ڪري ٿ
 window.searchBooks = function() {
