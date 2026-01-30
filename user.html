@@ -27,7 +27,21 @@
             <h1 class="text-4xl font-bold text-orange-500">منفرد سنڌي لائبريري</h1>
             <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ڪتاب يا ليکڪ ڳوليو..." class="p-3 rounded-lg w-full md:w-96 text-black px-4 outline-none border-2 border-orange-500 text-right">
         </div>
+        
     </nav>
+<div class="flex flex-wrap justify-center gap-4 my-4 p-4 bg-slate-800 rounded-xl max-w-7xl mx-auto">
+    <div class="flex gap-2 items-center">
+        <span class="text-sm">اکر:</span>
+        <button onclick="changeFontSize('text-small')" class="bg-gray-600 px-3 py-1 rounded text-xs">ننڍا</button>
+        <button onclick="changeFontSize('text-medium')" class="bg-gray-700 px-3 py-1 rounded text-sm border border-orange-500">وچولا</button>
+        <button onclick="changeFontSize('text-large')" class="bg-gray-600 px-3 py-1 rounded text-sm">وڏا</button>
+    </div>
+    <div class="flex gap-2 items-center border-r border-gray-600 pr-4">
+        <span class="text-sm">فونٽ:</span>
+        <button onclick="changeFontStyle('font-lateef')" class="bg-blue-900 px-3 py-1 rounded text-xs">Lateef</button>
+        <button onclick="changeFontStyle('font-noto')" class="bg-green-900 px-3 py-1 rounded text-xs">Noto Sans</button>
+    </div>
+</div>
 
     <main class="max-w-7xl mx-auto p-6">
         <h2 class="text-2xl mb-8 border-r-4 border-orange-500 pr-4">تازا شامل ڪيل ڪتاب</h2>
@@ -64,6 +78,9 @@
                 grid.innerHTML += `
                 <div class="book-card p-4 rounded-2xl flex gap-5 shadow-2xl">
                     <img src="${cover}" class="w-32 h-48 object-contain rounded-lg bg-black border border-gray-600">
+                  
+};
+
                     <div class="flex-1 text-right">
                         <h3 class="text-2xl font-bold text-orange-400 mb-1 leading-tight">${book.title}</h3>
                         <p class="text-gray-300 text-sm mb-2">ليکڪ: <span class="text-white font-bold">${book.author}</span></p>
@@ -86,6 +103,21 @@
             const filtered = allBooks.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term));
             displayBooks(filtered);
         };
+        
+
+// هاڻي هتي توهان جو ڪوڊ هوندو
+window.changeFontSize = function(sizeClass) {
+    const grid = document.getElementById('booksGrid');
+    grid.classList.remove('text-small', 'text-medium', 'text-large');
+    grid.classList.add(sizeClass);
+};
+
+window.changeFontStyle = function(fontClass) {
+    const grid = document.getElementById('booksGrid');
+    grid.classList.remove('font-lateef', 'font-noto');
+    grid.classList.add(fontClass);
+};
+
     </script>
 </body>
 </html>
