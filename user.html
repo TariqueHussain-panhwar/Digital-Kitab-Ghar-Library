@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ڊجيٽل ڪتاب گھر - پڙھندڙن جو پيج</title>
+    <title>ڊجيٽل لائبريري - پڙھندڙن لاءِ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Lateef', serif; background-color: #f1f5f9; } .book-card { transition: transform 0.3s ease; } .book-card:hover { transform: translateY(-5px); }</style>
+    <style>
+        body { font-family: 'Lateef', serif; background-color: #0f172a; color: white; }
+        .book-card { background: #1e293b; border: 1px solid #334155; transition: 0.3s; }
+        .book-card:hover { border-color: #f97316; transform: scale(1.02); }
+    </style>
 </head>
 <body>
-    <nav class="bg-blue-900 text-white p-4 sticky top-0 z-50 shadow-md">
+    <nav class="p-6 border-b border-gray-700 bg-slate-900 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 class="text-3xl font-bold">ڊجيٽل ڪتاب گھر</h1>
-            <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ڪتاب يا ليکڪ ڳوليو..." class="p-2 rounded-full w-full md:w-80 text-black px-4 outline-none border-2 border-orange-400 text-right">
+            <h1 class="text-4xl font-bold text-orange-500">منفرد سنڌي لائبريري</h1>
+            <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ڪتاب يا ليکڪ ڳوليو..." class="p-3 rounded-lg w-full md:w-96 text-black px-4 outline-none border-2 border-orange-500 text-right">
         </div>
     </nav>
-    <main class="max-w-7xl mx-auto p-6 text-right">
-        <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <h2 class="text-2xl mb-8 border-r-4 border-orange-500 pr-4">تازا شامل ڪيل ڪتاب</h2>
+        <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
     <script type="module">
@@ -31,14 +37,13 @@
             messagingSenderId: "806280436680",
             appId: "1:806280436680:web:da2956efd6b3a3333abefd"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let allBooks = [];
 
-        onSnapshot(collection(db, "books"), (querySnapshot) => {
+        onSnapshot(collection(db, "books"), (snap) => {
             allBooks = [];
-            querySnapshot.forEach((doc) => { allBooks.push({ id: doc.id, ...doc.data() }); });
+            snap.forEach((doc) => { allBooks.push({ id: doc.id, ...doc.data() }); });
             displayBooks(allBooks);
         });
 
@@ -46,19 +51,32 @@
             const grid = document.getElementById('booksGrid');
             grid.innerHTML = "";
             books.forEach(book => {
-                const cover = book.coverUrl || 'https://via.placeholder.com/300x400?text=سنڌي+ڪتاب';
+                const cover = book.coverUrl || 'https://via.placeholder.com/300x400?text=ڪتاب';
                 grid.innerHTML += `
-                    <div class="book-card bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
-                        <img src="${cover}" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">${book.category}</span>
-                            <h3 class="text-xl font-bold mt-2 text-gray-800">${book.title}</h3>
-                            <p class="text-sm text-gray-600 mb-4 italic">${book.author}</p>
-                            <a href="${book.pdfUrl}" target="_blank" class="block w-full text-center bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition font-bold">ڪتاب پڙهو 📖</a>
+                <div class="book-card p-4 rounded-2xl flex gap-5 shadow-2xl">
+                    <img src="${cover}" class="w-32 h-48 object-contain rounded-lg bg-black border border-gray-600">
+                    <div class="flex-1 text-right">
+                        <h3 class="text-2xl font-bold text-orange-400 mb-1 leading-tight">${book.title}</h3>
+                        <p class="text-gray-300 text-sm mb-2">ليکڪ: <span class="text-white font-bold">${book.author}</span></p>
+                        <div class="text-xs space-y-1 text-gray-400">
+                            <p>سال: ${book.year}</p>
+                            <p>ڪيٽيگري: ${book.category}</p>
+                            <p>ٻولي: ${book.lang}</p>
                         </div>
-                    </div>`;
+                        <div class="mt-6 flex gap-2">
+                            <a href="${book.pdfUrl}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 text-center transition">پڙھو 📖</a>
+                            <a href="${book.pdfUrl}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 text-center transition">ڊائون لوڊ 📥</a>
+                        </div>
+                    </div>
+                </div>`;
             });
         }
+
+        window.searchBooks = function() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allBooks.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term));
+            displayBooks(filtered);
+        };
     </script>
 </body>
 </html>
