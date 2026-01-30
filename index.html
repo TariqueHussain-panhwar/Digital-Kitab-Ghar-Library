@@ -31,6 +31,8 @@
                 lang: document.getElementById('lang').value || 'سنڌي',
                 coverUrl: document.getElementById('coverUrl').value,
                 pdfUrl: document.getElementById('pdfUrl').value,
+                authorBio: document.getElementById('authorBio').value,
+                
                 time: new Date()
             };
 
@@ -73,6 +75,8 @@
             <input type="text" id="lang" placeholder="ٻولي (مثال: سنڌي)" class="p-3 border rounded shadow-sm">
             <input type="text" id="coverUrl" placeholder="فوٽو جي لنڪ (URL)" class="p-3 border rounded shadow-sm text-left">
             <input type="text" id="pdfUrl" placeholder="PDF لنڪ (Google Drive)" class="p-3 border rounded shadow-sm text-left col-span-1 md:col-span-2">
+            <textarea id="authorBio" placeholder="ليکڪ جو مختصر تعارف" class="p-3 border rounded shadow-sm w-full col-span-1 md:col-span-2 text-right" rows="2"></textarea>
+            
             <button type="submit" class="col-span-1 md:col-span-2 bg-blue-900 text-white py-4 rounded-lg font-bold text-xl hover:bg-blue-800 transition shadow-md">ڊيٽابيس ۾ شامل ڪريو 💾</button>
         </form>
         <div class="mt-10">
