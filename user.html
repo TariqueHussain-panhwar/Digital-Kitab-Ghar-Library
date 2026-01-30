@@ -98,14 +98,14 @@
             });
         }
 
-        window.searchBooks = function() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allBooks.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term));
-            displayBooks(filtered);
-        };
-        
+        }; // هي displayBooks کي بند ڪري ٿو
 
-// هاڻي هتي توهان جو ڪوڊ هوندو
+window.searchBooks = function() {
+    const term = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allBooks.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term));
+    displayBooks(filtered);
+};
+
 window.changeFontSize = function(sizeClass) {
     const grid = document.getElementById('booksGrid');
     grid.classList.remove('text-small', 'text-medium', 'text-large');
@@ -117,7 +117,8 @@ window.changeFontStyle = function(fontClass) {
     grid.classList.remove('font-lateef', 'font-noto');
     grid.classList.add(fontClass);
 };
-
-    </script>
+</script>
 </body>
+
+        
 </html>
