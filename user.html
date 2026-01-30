@@ -98,8 +98,7 @@
             });
         }
 
-        }; // هي displayBooks کي بند ڪري ٿو
-
+        }; // هي displayBooks کي بند ڪري ٿ
 window.searchBooks = function() {
     const term = document.getElementById('searchInput').value.toLowerCase();
     const filtered = allBooks.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term));
@@ -117,8 +116,11 @@ window.changeFontStyle = function(fontClass) {
     grid.classList.remove('font-lateef', 'font-noto');
     grid.classList.add(fontClass);
 };
+
+window.toggleNightMode = function() {
+    document.body.classList.toggle('bg-black');
+    document.body.classList.toggle('text-white');
+};
 </script>
 </body>
-
-        
 </html>
