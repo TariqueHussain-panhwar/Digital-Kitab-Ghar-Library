@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ايڊمن ڊيش بورڊ - ڊجيٽل ڪتاب گھر</title>
+    <title>ايڊمن پينل - ڊجيٽل ڪتاب گھر</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
-    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // توهان جي موڪليل ڪنفيگريشن
         const firebaseConfig = {
             apiKey: "AIzaSyBUqkNMDmZEpdQtk26qk_bpPVpBPmK8OY8",
             authDomain: "digital-kitab-ghar.firebaseapp.com",
@@ -24,100 +22,88 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ڪتاب سيو ڪرڻ جو فنڪشن
         window.saveBook = async function() {
             const title = document.getElementById('title').value;
             const author = document.getElementById('author').value;
             const category = document.getElementById('category').value;
+            const coverUrl = document.getElementById('coverUrl').value;
             const desc = document.getElementById('desc').value;
 
             if(title && author) {
                 try {
                     await addDoc(collection(db, "books"), {
-                        title, author, category, desc, time: new Date()
+                        title, author, category, coverUrl, desc, time: new Date()
                     });
                     document.getElementById('bookForm').reset();
-                    alert("ڪتاب ڪاميابيءَ سان سيو ٿيو! ✅");
-                } catch (e) { alert("مسئلو آيو: " + e); }
+                    alert("ڪتاب ڪاميابيءَ سان شامل ٿيو! ✅");
+                } catch (e) { alert("غلطي: " + e); }
             }
         };
 
-        // ڊيٽا کي ريئل ٽائيم ڏيکارڻ
         onSnapshot(collection(db, "books"), (querySnapshot) => {
             const list = document.getElementById('bookList');
             list.innerHTML = "";
             querySnapshot.forEach((docSnap) => {
                 const book = docSnap.data();
-                const row = `
+                list.innerHTML += `
                     <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-900">${book.title}</td>
+                        <td class="p-3 font-bold">${book.title}</td>
                         <td class="p-3">${book.author}</td>
-                        <td class="p-3 text-blue-600">${book.category}</td>
-                        <td class="p-3">
-                            <button onclick="deleteBook('${docSnap.id}')" class="text-red-500 underline">ڊليٽ</button>
-                        </td>
+                        <td class="p-3 text-blue-600 font-bold">${book.category}</td>
+                        <td class="p-3"><button onclick="deleteBook('${docSnap.id}')" class="text-red-500 underline text-sm">ڊليٽ</button></td>
                     </tr>`;
-                list.innerHTML += row;
             });
         });
 
         window.deleteBook = async function(id) {
-            if(confirm("ڇا توهان واقعي هي ڪتاب ختم ڪرڻ چاهيو ٿا؟")) {
+            if(confirm("ڇا توهان هي ڪتاب ختم ڪرڻ چاهيو ٿا؟")) {
                 await deleteDoc(doc(db, "books", id));
             }
         };
     </script>
-
-    <style>
-        body { font-family: 'Lateef', serif; background-color: #f8fafc; }
-        .glass-box { background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-    </style>
+    <style>body { font-family: 'Lateef', serif; }</style>
 </head>
-<body class="p-4 md:p-8">
+<body class="bg-slate-100 p-4">
+    <div class="max-w-6xl mx-auto">
+        <header class="bg-blue-900 text-white p-6 rounded-2xl mb-8 flex justify-between items-center shadow-lg border-b-4 border-orange-500">
+            <h1 class="text-3xl font-bold">ايڊمن ڪنٽرول ڊيش بورڊ</h1>
+            <p class="bg-green-500 px-3 py-1 rounded-full text-sm">آنلائن 🟢</p>
+        </header>
 
-    <header class="max-w-6xl mx-auto bg-blue-900 text-white p-6 rounded-2xl mb-8 flex justify-between items-center shadow-lg">
-        <div>
-            <h1 class="text-3xl font-bold">ڊجيٽل ڪتاب گهر - لائبريري مينيجمينٽ</h1>
-            <p class="text-blue-200">ايڊمن: طارق حسين پنهور صاحب</p>
-        </div>
-    </header>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-right">
+            <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-blue-700">
+                <h3 class="text-2xl font-bold mb-4 text-blue-900 border-b pb-2">نئون ڪتاب شامل ڪريو</h3>
+                <form id="bookForm" onsubmit="event.preventDefault(); saveBook();" class="space-y-4">
+                    <input type="text" id="title" placeholder="ڪتاب جو عنوان" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="author" placeholder="ليکڪ جو نالو" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <select id="category" class="w-full p-3 border rounded-lg font-bold">
+                        <option>تاريخ</option> <option>فلسفو</option> <option>ڪھاڻيون</option>
+                        <option>ناول</option> <option>جيل ڊائريون</option> <option>سفرناما</option>
+                        <option>آتم ڪٿا</option> <option>ٻاراڻو ادب</option> <option>ويا ڪرڻ</option>
+                        <option>لطيفيات</option> <option>اسلامي ڪتاب</option> <option>سياست</option>
+                        <option>شاعري</option> <option>ڏاھپ</option> <option>نفسيات</option>
+                    </select>
+                    <input type="text" id="coverUrl" placeholder="ڪتاب جي فوٽو جي لنڪ (URL)" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-left">
+                    <textarea id="desc" placeholder="مختصر تعارف" class="w-full p-3 border rounded-lg" rows="3"></textarea>
+                    <button type="submit" class="w-full bg-blue-700 text-white py-3 rounded-lg font-bold text-xl hover:bg-blue-800 shadow-md">اپلوڊ ڪريو ✅</button>
+                </form>
+            </div>
 
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <div class="glass-box p-6 border-t-8 border-blue-700">
-            <h3 class="text-2xl font-bold mb-6">نئون ڪتاب شامل ڪريو</h3>
-            <form id="bookForm" class="space-y-4" onsubmit="event.preventDefault(); saveBook();">
-                <input type="text" id="title" placeholder="ڪتاب جو عنوان" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" required>
-                <input type="text" id="author" placeholder="ليکڪ جو نالو" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" required>
-                <select id="category" class="w-full p-3 border rounded-lg">
-                    <option>تاريخ</option> <option>فلسفو</option> <option>ڪھاڻيون</option>
-                    <option>ناول</option> <option>جيل ڊائريون</option> <option>سفرناما</option>
-                    <option>آتم ڪٿا</option> <option>ٻاراڻو ادب</option> <option>ويا ڪرڻ</option>
-                    <option>لطيفيات</option> <option>اسلامي ڪتاب</option> <option>سياست</option>
-                    <option>شاعري</option> <option>ڏاھپ</option> <option>نفسيات</option>
-                    <option>ويب ڊزائين</option> <option>گرافڪس</option> <option>لي آئوٽ</option>
-                </select>
-                <textarea id="desc" placeholder="مختصر تعارف" class="w-full p-3 border rounded-lg" rows="4"></textarea>
-                <button type="submit" class="w-full bg-blue-700 text-white py-3 rounded-lg font-bold text-lg hover:bg-blue-800 transition">سسٽم ۾ محفوظ ڪريو 💾</button>
-            </form>
-        </div>
-
-        <div class="lg:col-span-2 glass-box p-6 overflow-hidden border-t-8 border-green-600">
-            <h3 class="text-2xl font-bold mb-6">ڊيٽابيس ۾ موجود ڪتاب</h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="p-3">عنوان</th> <th class="p-3">ليکڪ</th>
-                            <th class="p-3">صنف</th> <th class="p-3">ايڪشن</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookList">
-                        </tbody>
-                </table>
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-xl border-t-4 border-green-600">
+                <h3 class="text-2xl font-bold mb-4 text-green-800 border-b pb-2">موجود ڪتابن جي لسٽ</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 italic">
+                            <tr>
+                                <th class="p-3">عنوان</th> <th class="p-3">ليکڪ</th>
+                                <th class="p-3">صنف</th> <th class="p-3">عمل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookList"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-
 </body>
 </html>
