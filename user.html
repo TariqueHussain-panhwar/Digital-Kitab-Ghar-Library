@@ -6,29 +6,17 @@
     <title>ڊجيٽل ڪتاب گھر - پڙھندڙن جو پيج</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Lateef', serif; background-color: #f1f5f9; }
-        .book-card { transition: transform 0.3s ease, shadow 0.3s ease; }
-        .book-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .nav-glass { background: rgba(30, 58, 138, 0.9); backdrop-filter: blur(10px); }
-    </style>
+    <style>body { font-family: 'Lateef', serif; background-color: #f1f5f9; } .book-card { transition: transform 0.3s ease; } .book-card:hover { transform: translateY(-5px); }</style>
 </head>
 <body>
-
-    <nav class="nav-glass text-white p-4 sticky top-0 z-50 shadow-md">
+    <nav class="bg-blue-900 text-white p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <h1 class="text-3xl font-bold">ڊجيٽل ڪتاب گھر</h1>
-            <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ڪتاب يا ليکڪ ڳوليو..." class="p-2 rounded-full w-full md:w-80 text-black px-4 outline-none border-2 border-orange-400">
+            <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ڪتاب يا ليکڪ ڳوليو..." class="p-2 rounded-full w-full md:w-80 text-black px-4 outline-none border-2 border-orange-400 text-right">
         </div>
     </nav>
-
-    <main class="max-w-7xl mx-auto p-6">
-        <div class="flex flex-wrap gap-2 mb-8 justify-center" id="categoryFilter">
-            <button onclick="filterBooks('All')" class="bg-blue-800 text-white px-4 py-1 rounded-full text-sm">سڀ ڪتاب</button>
-            </div>
-
-        <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            </div>
+    <main class="max-w-7xl mx-auto p-6 text-right">
+        <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
     </main>
 
     <script type="module">
@@ -50,9 +38,7 @@
 
         onSnapshot(collection(db, "books"), (querySnapshot) => {
             allBooks = [];
-            querySnapshot.forEach((doc) => {
-                allBooks.push({ id: doc.id, ...doc.data() });
-            });
+            querySnapshot.forEach((doc) => { allBooks.push({ id: doc.id, ...doc.data() }); });
             displayBooks(allBooks);
         });
 
@@ -60,31 +46,19 @@
             const grid = document.getElementById('booksGrid');
             grid.innerHTML = "";
             books.forEach(book => {
-                const cover = book.coverUrl || 'https://via.placeholder.com/300x400?text=No+Cover';
+                const cover = book.coverUrl || 'https://via.placeholder.com/300x400?text=سنڌي+ڪتاب';
                 grid.innerHTML += `
                     <div class="book-card bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
-                        <img src="${cover}" class="w-full h-64 object-cover" alt="${book.title}">
-                        <div class="p-4 text-right">
+                        <img src="${cover}" class="w-full h-64 object-cover">
+                        <div class="p-4">
                             <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">${book.category}</span>
                             <h3 class="text-xl font-bold mt-2 text-gray-800">${book.title}</h3>
                             <p class="text-sm text-gray-600 mb-4 italic">${book.author}</p>
-                            <button class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition font-bold">پڙھو يا ڊائون لوڊ</button>
+                            <a href="${book.pdfUrl}" target="_blank" class="block w-full text-center bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition font-bold">ڪتاب پڙهو 📖</a>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
-
-        window.searchBooks = function() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allBooks.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term));
-            displayBooks(filtered);
-        };
-
-        window.filterBooks = function(cat) {
-            if(cat === 'All') displayBooks(allBooks);
-            else displayBooks(allBooks.filter(b => b.category === cat));
-        };
     </script>
 </body>
 </html>
